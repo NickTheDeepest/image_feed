@@ -1,13 +1,10 @@
 import UIKit
+import Kingfisher
 
 final class SingleImageViewController: UIViewController {
-    var image: UIImage! {
-        didSet {
-            guard isViewLoaded else { return }
-            imageView.image = image
-            rescaleAndCenterImageInScrollView(image: image)
-        }
-    }
+    
+    var image: URL?
+    var imageDownload: UIImage?
     
     @IBOutlet private var scrollView: UIScrollView!
     @IBOutlet private var imageView: UIImageView!
@@ -16,8 +13,32 @@ final class SingleImageViewController: UIViewController {
         super.viewDidLoad()
         scrollView.minimumZoomScale = 0.1
         scrollView.maximumZoomScale = 1.25
-        imageView.image = image
-        rescaleAndCenterImageInScrollView(image: image)
+        showImage(url: image)
+        
+    }
+    
+    func showImage(url: URL?) {
+        guard let url else { return }
+        UIBlockingProgressHUD.show()
+        imageView.kf.setImage(with: url) { [weak self] result in
+            UIBlockingProgressHUD.dismiss()
+            guard let self else { return }
+            switch result {
+            case .success(let imageResult):
+                self.rescaleAndCenterImageInScrollView(image: imageResult.image)
+                self.imageDownload = imageResult.image
+            case .failure(let error):
+                print(error.localizedDescription)
+                let alert = UIAlertController(title: "Что-то пошло не так", message: "Попробовать еще раз?", preferredStyle: .alert)
+                let action = UIAlertAction(title: "Повторить", style: .default) { [weak self] _ in
+                    guard let self else { return }
+                    self.showImage(url: url)
+                }
+                
+                alert.addAction(action)
+                self.present(alert, animated: true)
+            }
+        }
     }
     
     @IBAction private func didTapBackButton() {

@@ -10,6 +10,8 @@ final class ProfileViewController: UIViewController {
     private lazy var descriptionLabel = UILabel()
     private lazy var logoutButton = UIButton()
     private var profileImageServiceObserver: NSObjectProtocol?
+    private var storageToken = OAuth2TokenStorage()
+
     
     override func viewDidLoad() {
         let avatarImageView = UIImage(named: "avatar")
@@ -73,7 +75,7 @@ final class ProfileViewController: UIViewController {
             let profileImageURL = ProfileImageService.shared.avatarURL,
             let url = URL(string: profileImageURL)
         else { return }
-        let processor = RoundCornerImageProcessor(cornerRadius: 61)
+//        let processor = RoundCornerImageProcessor(cornerRadius: 61)
         avatarImageView.kf.indicatorType = .activity
         avatarImageView.kf.setImage(with: url, placeholder: UIImage(named: "avatar_image"), options: [.cacheSerializer(FormatIndicatedCacheSerializer.png)])
         let cache = ImageCache.default
@@ -89,5 +91,21 @@ final class ProfileViewController: UIViewController {
     }
     
     @objc private func didTapLogoutButton() {
+        let alert = UIAlertController(title: "Пока, пока!", message: "Уверены что хотите выйти?", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Нет", style: .cancel))
+        alert.addAction(UIAlertAction(title: "Да", style: .default, handler: { [weak self] action in
+            guard let self = self else { return }
+            self.storageToken.clearToken()
+            WebViewViewController.clean()
+            ImagesListService.shared.clean()
+            ProfileService.shared.clean()
+            ProfileImageService.shared.clean()
+            self.tabBarController?.dismiss(animated: true)
+            guard let window = UIApplication.shared.windows.first else {
+                fatalError("Error")
+            }
+            window.rootViewController = SplashViewController()
+        }))
+        present(alert, animated: true, completion: nil)
     }
 }
