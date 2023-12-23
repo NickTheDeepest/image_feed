@@ -1,6 +1,15 @@
 import UIKit
+import Kingfisher
 
 final class ProfileViewController: UIViewController {
+    
+    private let profileService = ProfileService.shared
+    private lazy var avatarImageView = UIImageView()
+    private lazy var nameLabel = UILabel()
+    private lazy var loginNameLabel = UILabel()
+    private lazy var descriptionLabel = UILabel()
+    private lazy var logoutButton = UIButton()
+    private var profileImageServiceObserver: NSObjectProtocol?
     
     override func viewDidLoad() {
         let avatarImageView = UIImage(named: "avatar")
@@ -11,7 +20,7 @@ final class ProfileViewController: UIViewController {
         let logoutButton = UIButton.systemButton(with: UIImage(named: "logout_button")!, target: self, action: #selector(Self.didTapLogoutButton)
         )
         logoutButton.tintColor = UIColor(red: 245/255, green: 107/255, blue: 108/255, alpha: 1)
-    
+        
         nameLabel.textColor = UIColor(red: 1, green: 1, blue: 1, alpha: 1.0)
         nameLabel.font = UIFont.boldSystemFont(ofSize: 23)
         nameLabel.text = "Екатерина Новикова"
@@ -21,7 +30,7 @@ final class ProfileViewController: UIViewController {
         descriptionLabel.text = "Hello, world!"
         descriptionLabel.textColor = UIColor(red: 1, green: 1, blue: 1, alpha: 1.0)
         descriptionLabel.font = UIFont.systemFont(ofSize: 13)
-
+        
         imageView.translatesAutoresizingMaskIntoConstraints = false
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
         loginNameLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -49,8 +58,36 @@ final class ProfileViewController: UIViewController {
         logoutButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 45).isActive = true
         logoutButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16).isActive = true
         
+        updateProfileDetails()
+        
+        profileImageServiceObserver = NotificationCenter.default.addObserver(forName: ProfileImageService.didChangeNotification, object: nil, queue: .main)
+        { [weak self] _ in
+            guard let self = self else { return }
+            self.updateAvatar()
+        }
+        updateAvatar()
     }
-
+    
+    private func updateAvatar() {
+        guard
+            let profileImageURL = ProfileImageService.shared.avatarURL,
+            let url = URL(string: profileImageURL)
+        else { return }
+        let processor = RoundCornerImageProcessor(cornerRadius: 61)
+        avatarImageView.kf.indicatorType = .activity
+        avatarImageView.kf.setImage(with: url, placeholder: UIImage(named: "avatar_image"), options: [.cacheSerializer(FormatIndicatedCacheSerializer.png)])
+        let cache = ImageCache.default
+        cache.clearDiskCache()
+        cache.clearMemoryCache()
+    }
+    
+    private func updateProfileDetails() {
+        guard let profile = profileService.profile else { return }
+        nameLabel.text = profile.name
+        loginNameLabel.text = profile.loginName
+        descriptionLabel.text = profile.bio
+    }
+    
     @objc private func didTapLogoutButton() {
     }
 }

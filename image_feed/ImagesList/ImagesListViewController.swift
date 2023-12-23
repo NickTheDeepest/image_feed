@@ -2,10 +2,9 @@ import UIKit
 
 final class ImagesListViewController: UIViewController {
     private let ShowSingleImageSegueIdentifier = "ShowSingleImage"
+    private let photosName: [String] = Array(0..<20).map{ "\($0)" }
 
     @IBOutlet private var tableView: UITableView!
-
-    private let photosName: [String] = Array(0..<20).map{ "\($0)" }
 
     override func viewDidLoad() {
         super.viewDidLoad()

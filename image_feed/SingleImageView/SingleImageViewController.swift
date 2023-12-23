@@ -11,7 +11,7 @@ final class SingleImageViewController: UIViewController {
     
     @IBOutlet private var scrollView: UIScrollView!
     @IBOutlet private var imageView: UIImageView!
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         scrollView.minimumZoomScale = 0.1
@@ -19,7 +19,7 @@ final class SingleImageViewController: UIViewController {
         imageView.image = image
         rescaleAndCenterImageInScrollView(image: image)
     }
-
+    
     @IBAction private func didTapBackButton() {
         dismiss(animated: true, completion: nil)
     }
