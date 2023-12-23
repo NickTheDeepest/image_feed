@@ -17,10 +17,14 @@ final class ProfileImageService {
     private var task: URLSessionTask?
     private let storageToken = OAuth2TokenStorage()
     
+    private init(){
+        
+    }
+    
     func fetchProfileImageURL(username: String, _ completion: @escaping (Result<String, Error>) -> Void) {
         assert(Thread.isMainThread)
         
-        let request = makeRequest(token: storageToken.token!, username: username)
+        let request = makeRequest(token: storageToken.token ?? "Error", username: username)
         let session = URLSession.shared
         let task = session.objectTask(for: request) { [weak self] (result: Result<UserResult, Error>) in
             guard let self = self else { return }
@@ -28,12 +32,12 @@ final class ProfileImageService {
             case .success(let decodedObject):
                 let avatarURL = ProfileImage(decodedData: decodedObject)
                 self.avatarURL = avatarURL.profileImage["small"]
-                completion(.success(self.avatarURL!))
+                completion(.success(self.avatarURL ?? "Error"))
                 NotificationCenter.default
                     .post(
                         name: ProfileImageService.didChangeNotification,
                         object: self,
-                        userInfo: ["URL": self.avatarURL!])
+                        userInfo: ["URL": self.avatarURL ?? "Error"])
             case .failure(let error):
                 completion(.failure(error))
             }

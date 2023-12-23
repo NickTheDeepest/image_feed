@@ -4,11 +4,11 @@ import Kingfisher
 final class ProfileViewController: UIViewController {
     
     private let profileService = ProfileService.shared
-    private let avatarImageView = UIImageView()
-    private let nameLabel = UILabel()
-    private let loginNameLabel = UILabel()
-    private let descriptionLabel = UILabel()
-    private let logoutButton = UIButton()
+    private lazy var avatarImageView = UIImageView()
+    private lazy var nameLabel = UILabel()
+    private lazy var loginNameLabel = UILabel()
+    private lazy var descriptionLabel = UILabel()
+    private lazy var logoutButton = UIButton()
     private var profileImageServiceObserver: NSObjectProtocol?
     
     override func viewDidLoad() {
@@ -75,7 +75,7 @@ final class ProfileViewController: UIViewController {
         else { return }
         let processor = RoundCornerImageProcessor(cornerRadius: 61)
         avatarImageView.kf.indicatorType = .activity
-        avatarImageView.kf.setImage(with: url, placeholder: UIImage(named: "avatar_image"), options: [.processor(processor),.cacheSerializer(FormatIndicatedCacheSerializer.png)])
+        avatarImageView.kf.setImage(with: url, placeholder: UIImage(named: "avatar_image"), options: [.cacheSerializer(FormatIndicatedCacheSerializer.png)])
         let cache = ImageCache.default
         cache.clearDiskCache()
         cache.clearMemoryCache()
