@@ -31,7 +31,7 @@ final class ProfileImageService {
             switch result {
             case .success(let decodedObject):
                 let avatarURL = ProfileImage(decodedData: decodedObject)
-                self.avatarURL = avatarURL.profileImage["small"]
+                self.avatarURL = avatarURL.profileImage["large"]
                 completion(.success(self.avatarURL ?? "Error"))
                 NotificationCenter.default
                     .post(

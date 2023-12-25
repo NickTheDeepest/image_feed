@@ -16,11 +16,14 @@ final class ImagesListService {
     static let shared = ImagesListService()
     private let storageToken = OAuth2TokenStorage()
     private let dateFormatter = ISO8601DateFormatter()
+    
+    private init() {}
 
     func fetchPhotosNextPage() {
         assert(Thread.isMainThread)
-        task?.cancel()
-
+        if task != nil {
+            task?.cancel()
+        }
         let page = lastLoadedPage == nil
         ? 1
         : lastLoadedPage! + 1

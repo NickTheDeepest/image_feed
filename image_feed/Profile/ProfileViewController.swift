@@ -4,7 +4,7 @@ import Kingfisher
 final class ProfileViewController: UIViewController {
     
     private let profileService = ProfileService.shared
-    private lazy var avatarImageView = UIImageView()
+    private lazy var imageView = UIImageView()
     private lazy var nameLabel = UILabel()
     private lazy var loginNameLabel = UILabel()
     private lazy var descriptionLabel = UILabel()
@@ -14,11 +14,11 @@ final class ProfileViewController: UIViewController {
 
     
     override func viewDidLoad() {
-        let avatarImageView = UIImage(named: "avatar")
-        let imageView = UIImageView(image: avatarImageView)
-        let nameLabel = UILabel()
-        let loginNameLabel = UILabel()
-        let descriptionLabel = UILabel()
+//        let avatarImageView = UIImage(named: "avatar")
+//        let imageView = UIImageView(image: avatarImageView)
+//        let nameLabel = UILabel()
+//        let loginNameLabel = UILabel()
+//        let descriptionLabel = UILabel()
         let logoutButton = UIButton.systemButton(with: UIImage(named: "logout_button")!, target: self, action: #selector(Self.didTapLogoutButton)
         )
         logoutButton.tintColor = UIColor(red: 245/255, green: 107/255, blue: 108/255, alpha: 1)
@@ -32,6 +32,8 @@ final class ProfileViewController: UIViewController {
         descriptionLabel.text = "Hello, world!"
         descriptionLabel.textColor = UIColor(red: 1, green: 1, blue: 1, alpha: 1.0)
         descriptionLabel.font = UIFont.systemFont(ofSize: 13)
+        imageView.layer.masksToBounds = true
+        imageView.layer.cornerRadius = 35
         
         imageView.translatesAutoresizingMaskIntoConstraints = false
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -61,7 +63,7 @@ final class ProfileViewController: UIViewController {
         logoutButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16).isActive = true
         
         updateProfileDetails()
-        
+
         profileImageServiceObserver = NotificationCenter.default.addObserver(forName: ProfileImageService.didChangeNotification, object: nil, queue: .main)
         { [weak self] _ in
             guard let self = self else { return }
@@ -76,8 +78,8 @@ final class ProfileViewController: UIViewController {
             let url = URL(string: profileImageURL)
         else { return }
 //        let processor = RoundCornerImageProcessor(cornerRadius: 61)
-        avatarImageView.kf.indicatorType = .activity
-        avatarImageView.kf.setImage(with: url, placeholder: UIImage(named: "avatar_image"), options: [.cacheSerializer(FormatIndicatedCacheSerializer.png)])
+        imageView.kf.indicatorType = .activity
+        imageView.kf.setImage(with: url, placeholder: UIImage(named: "avatar_image"), options: [.cacheSerializer(FormatIndicatedCacheSerializer.png)])
         let cache = ImageCache.default
         cache.clearDiskCache()
         cache.clearMemoryCache()
