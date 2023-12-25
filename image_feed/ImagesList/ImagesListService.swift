@@ -92,11 +92,12 @@ final class ImagesListService {
 
         guard let token = storageToken.token else { return }
         var request: URLRequest?
-        if isLike {
-            request = deleteLikeRequest(token, photoId: photoId)
-        } else {
-            request = postLikeRequest(token, photoId: photoId)
-        }
+//        if isLike {
+//            request = deleteLikeRequest(token, photoId: photoId)
+//        } else {
+//            request = postLikeRequest(token, photoId: photoId)
+//        }
+        request = isLike ? deleteLikeRequest(token, photoId: photoId) : postLikeRequest(token, photoId: photoId)
         guard let request = request else { return }
         let session = URLSession.shared
         let task = session.objectTask(for: request) { [weak self] (result: Result<PhotoIsLiked, Error>) in
