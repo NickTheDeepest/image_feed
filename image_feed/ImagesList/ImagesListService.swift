@@ -133,7 +133,7 @@ final class ImagesListService {
         var requestPost = URLRequest.makeHTTPRequest(
             path: "photos/\(photoId)/like",
             httpMethod: "POST",
-            baseURL: URL(string: "\(defaultBaseURL)")!)
+            baseURL: URL(string: "\(DefaultBaseURL)")!)
         requestPost.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         return requestPost
     }
@@ -147,7 +147,7 @@ final class ImagesListService {
         var requestDelete = URLRequest.makeHTTPRequest(
             path: "photos/\(photoId)/like",
             httpMethod: "DELETE",
-            baseURL: URL(string: "\(defaultBaseURL)")!)
+            baseURL: URL(string: "\(DefaultBaseURL)")!)
         requestDelete.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         return requestDelete
     }
